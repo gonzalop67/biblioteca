@@ -19,22 +19,27 @@
 <div class="form-group">
     <label for="password" class="col-lg-3 control-label {{!isset($data) ? 'requerido' : ''}}">Contraseña</label>
     <div class="col-lg-8">
-        <input type="password" name="password" id="password" class="form-control" value="{{old('password', $data->password ?? '')}}" {{!isset($data) ? 'required' : ''}} minlength="5"/>
+        <input type="password" name="password" id="password" class="form-control" value="" {{!isset($data) ? 'required' : ''}} minlength="5"/>
     </div>
 </div>
 <div class="form-group">
-    <label for="re_password" class="col-lg-3 control-label {{!isset($data) ? 'requerido' : ''}}"">Repita Contraseña</label>
+    <label for="re_password" class="col-lg-3 control-label {{!isset($data) ? 'requerido' : ''}}">Repita Contraseña</label>
     <div class="col-lg-8">
-        <input type="password" name="re_password" id="re_password" class="form-control" value="{{old('re_password', $data->re_password ?? '')}}" {{!isset($data) ? 'required' : ''}} minlength="5"/>
+        <input type="password" name="re_password" id="re_password" class="form-control" value="" {{!isset($data) ? 'required' : ''}} minlength="5"/>
     </div>
 </div>
 <div class="form-group">
     <label for="rol_id" class="col-lg-3 control-label requerido">Rol</label>
     <div class="col-lg-8">
-        <select name="rol_id" id="rol_id" class="form-control" required>
+        <select name="rol_id[]" id="rol_id" class="form-control" multiple required>
             <option value="">Seleccione el rol</option>
             @foreach($rols as $id => $nombre)
-                <option value="{{$id}}" {{old("rol_id", $data->roles[0]->id ?? "") == $id ? "selected" : ""}}>{{$nombre}}</option>
+                <option
+                value="{{$id}}"
+                {{is_array(old('rol_id')) ? (in_array($id, old('rol_id')) ? 'selected' : '')  : (isset($data) ? ($data->roles->firstWhere('id', $id) ? 'selected' : '') : '')}}
+                >
+                {{$nombre}}
+                </option>
             @endforeach
         </select>
     </div>
