@@ -10,6 +10,7 @@
 @section('contenido')
     <div class="row">
         <div class="col-lg-12">
+            @csrf
             @include('includes.form-error')
             @include('includes.mensaje')
             <div class="box box-danger">
@@ -25,18 +26,20 @@
                     <thead>
                         <tr>
                             <th>Título</th>
+                            <th>Cantidad</th>
                             <th class="width70"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($datos as $dato)
                             <tr>
-                                <td>{{$dato->titulo}}</td>
+                                <td><a href="{{route('ver_libro', $dato)}}" class="ver-libro">{{$dato->titulo}}</a></td>
+                                <td>{{$dato->cantidad}}</td>
                                 <td>
-                                    <a href="{{route('editar_permiso', ['id' => $dato->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                    <a href="{{route('editar_libro', ['id' => $dato->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                         <i class="fa fa-fw fa-pencil"></i>
                                     </a>
-                                    <form action="{{route('eliminar_permiso', ['id' => $dato->id])}}" class="d-inline form-eliminar" method="POST">
+                                    <form action="{{route('eliminar_libro', ['id' => $dato->id])}}" class="d-inline form-eliminar" method="POST">
                                         @csrf
                                         @method("delete")
                                         <button type="submit" class="btn-accion-tabla eliminar tooltipsC" title="Eliminar este registro">
@@ -48,6 +51,22 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-ver-libro" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Libro</h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
