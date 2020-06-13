@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Libro;
 
+use App\Http\Requests\ValidacionLibro;
+use App\Models\Libro;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class LibroController extends Controller
 {
@@ -36,7 +38,7 @@ class LibroController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function guardar(Request $request)
+    public function guardar(ValidacionLibro $request)
     {
         if ($foto = Libro::setCaratula($request->foto_up))
             $request->request->add(['foto' => $foto]);
@@ -63,7 +65,8 @@ class LibroController extends Controller
      */
     public function editar($id)
     {
-        //
+        $data = Libro::findOrFail($id);
+        return view('libro.editar', compact('data'));
     }
 
     /**
@@ -73,9 +76,13 @@ class LibroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function actualizar(Request $request, $id)
+    public function actualizar(ValidacionLibro $request, $id)
     {
-        //
+        $libro = Libro::findOrFail($id);
+        if ($foto = Libro::setCaratula($request->foto_up, $libro->foto))
+            $request->request->add(['foto' => $foto]);
+        $libro->update($request->all());
+        return redirect()->route('libro')->with('mensaje', 'El libro se actualizó correctamente');
     }
 
     /**
@@ -84,8 +91,18 @@ class LibroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function eliminar($id)
+    public function eliminar(Request $request, $id)
     {
-        //
+        if ($request->ajax()) {
+            $libro = Libro::findOrFail($id);
+            if (Libro::destroy($id)) {
+                Storage::disk('public')->delete("imagenes/caratulas/$libro->foto");
+                return response()->json(['mensaje' => 'ok']);
+            } else {
+                return response()->json(['mensaje' => 'ng']);
+            }
+        } else {
+            abort(404);
+        }
     }
 }
