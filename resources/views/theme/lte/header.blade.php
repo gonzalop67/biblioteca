@@ -1,10 +1,13 @@
+@php
+    use Carbon\Carbon;
+@endphp
 <header class="main-header">
     <!-- Logo -->
     <a href="/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>A</b>LT</span>
+      <span class="logo-mini"><b>B</b>TC</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>LTE</span>
+      <span class="logo-lg"><b>Bioblioteca</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -109,24 +112,28 @@
                 <img src="{{asset("assets/$theme/dist/img/user2-160x160.jpg")}}" class="img-circle" alt="User Image">
 
                 <p>
-                  Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2012</small>
+                    {{session()->get('nombre_usuario', 'Inivitado')}} - {{session()->get('rol_nombre', 'Guest')}}
+                    @auth
+                        <small>Registrado desde {{Carbon::parse(auth()->user()->created_at)->year }}</small>
+                    @endauth
                 </p>
               </li>
               <!-- Menu Body -->
               <li class="user-body">
                 <div class="row">
                     @if(session()->get("roles") && count(session()->get("roles")) > 1)
-                    <div class="col-xs-6 text-center">
-                        <a href="#" class="cambiar-rol">Cambiar Rol</a>
-                    </div>
+                        <div class="col-xs-6 text-center">
+                            <a href="#" class="cambiar-rol">Cambiar Rol</a>
+                        </div>
                     @endif
                 </div>
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{{route('login')}}" class="btn btn-default btn-flat">Login</a>
+                    @guest
+                        <a href="{{route('login')}}" class="btn btn-default btn-flat">Login</a>
+                    @endguest
                 </div>
                 <div class="pull-right">
                   <a href="{{route('logout')}}" class="btn btn-default btn-flat">Salir</a>
